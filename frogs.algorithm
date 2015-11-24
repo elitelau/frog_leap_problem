@@ -1,0 +1,60 @@
+// 注: 算法用记录下的状态空间图、树形结构，追溯可行的路径
+//     为了节省空间，需要将死路部分子树结构删除
+//
+// 注: 不适合用dfs，比较适合于bfs，因为枚举当前状态的可能下一状态比较方便
+//     但是枚举第一个，深度遍历返回，再枚举其他的，不方便。
+//
+// input: initial position of frogs and gap
+//        init_stat <- {array: { <L1, 7>, <L2, 6>, <L3, 5>, <G, 4>
+//                                  <R3, 3>, <R2, 2>, <R1, 1>   },
+//                      ssg_vertex: NULL}
+//
+// output: a state chain whose initial state is init_stat, whose final state
+//         with traffic array { <R3, 7>, <R2, 6>, <R1, 5>, <G, 4>, 
+//                              <L1, 3>, <L2, 2>, <L1, 1> }
+//
+// relationship between bfs on possible states(represents by traffic with array 
+// implementation) and trace graph nodes
+// state <---> node
+//
+// ssg_vertex links to state in order to trace state change
+// while state links to ssg_vertex in order to delete nodes for memory saving.
+//
+// trace graph: is the possible states goes to, i.e, state space graph
+//
+ALGORITHM frog_problem() 
+   bfs_queue.push(init_stat)
+
+   // a graph keep all traces so that it can find the path from initial state
+   // to final state
+   // note: delete leaf nodes and parental nodes which proved to be dead solution
+   //       in oder to reduce memory occupation
+   root <- ssg_vertex{state: &init_stat, parent: NULL}
+   init_stat.ssg_vertex <- root
+
+   WHILE bfs_queue.empty() <> true 
+   DO
+      top_stat <- bfs_queue.front()
+      bfs_queue.pop_front()
+      parent_vertex <- top_stat.ssg_vertex
+
+      FOREACH possible traffic array x that top_stat goes to
+      DO
+         stat <- {array: x, ssg_vertex: NULL}
+         v <- ssg_vertex{state: stat, parent: parent_vertex}
+         stat.ssg_vertex <- v
+
+         // find a solution, maybe multiple solutions,
+         // here only prints one
+         IF x is the target i.e, final state
+            list <- {}
+            FOREACH vertex i iterated from v to root
+            DO
+               list.push_back(i.state)
+            DONE
+            list.reverse()
+            print(list)
+            RETURN
+      DONE
+
+   DONE
