@@ -24,6 +24,7 @@
 #include <list>
 #include <queue>
 #include <iostream>
+#include <cassert>
 
 typedef std::pair<int, int> EntityId;
 
@@ -34,8 +35,8 @@ enum {
 };
 
 const char* g_array_entity_denote[] = {
-    "w",
-    "W",
+    "L",
+    "R",
     "G"
 };
 
@@ -44,14 +45,13 @@ static std::vector<EntityId> g_array_entity_id =
         {LEFT_FROG, 1},
         {LEFT_FROG, 2},
         {LEFT_FROG, 3},
-        {GAP, 1},
+        {GAP, 0},
         {RIGHT_FROG, 3},
         {RIGHT_FROG, 2},
         {RIGHT_FROG, 1}
     };
 
 struct ssgVertex;
-//typedef std::pair<EntityId*, int> EntityElement;            // id -> position
 typedef std::vector<EntityId*> EntityArray;             // position array
 typedef std::pair<EntityArray, struct ssgVertex*> State;    // state enumerated in whole state space 
 
@@ -67,32 +67,66 @@ typedef struct ssgVertex {
 } ssgVertex;
 
 
-void copy_value(State* from, State* to) {
+void copy_value(const State* from, State* to) {
    to->second = from->second;
    for (auto x : from->first) {
       to->first.push_back(x);
    }
 }
 
-inline void print_state(const State* s) {
+inline void print_state(const State* s, const std::string& additional = std::string()) {
     for (auto elem: s->first) {
         std::cout << g_array_entity_denote[elem->first] << elem->second << " ";
     }
-    std::cout << std::endl;
+    std::cout << additional << std::endl;
     fflush(stdout);
 }
 
+void get_step_desc(const State* prev_state, const State* cur_state, std::string& out);
+
 void print_solution(const State* s) {
-    std::list<State*>   solution;
+    std::list<const State*>   solution;
+    std::string         step_desc;
     for(ssgVertex* v = s->second; v  !=  NULL;   v   = v->parent) {
         solution.push_back(v->state);
     }
     solution.reverse();
 
     std::cout << "solution path is:" << std::endl;
-    for (auto step: solution) {
-        print_state(step);
+    std::list<const State*>::iterator it = solution.begin();
+    print_state(*it);
+    const State* prev_state = *it;
+    for (++it; it != solution.end(); prev_state = *it, ++it) {
+        get_step_desc(prev_state, *it, step_desc);
+        print_state(*it, step_desc);
     }
+}
+
+inline void get_step_desc(const State* prev_state, const State* cur_state, std::string& out) {
+    int from_index = -1, to_index = -1, diff_count = 0;
+    for (int i = 0; i < prev_state->first.size(); ++i) {
+        if (prev_state->first[i]->first != cur_state->first[i]->first &&
+            prev_state->first[i]->second != cur_state->first[i]->second)
+        {
+            if (prev_state->first[i]->first == GAP) {
+                to_index = i;
+            }
+            else {
+                from_index = i; 
+            }
+            ++diff_count;
+        }
+    }
+    assert(diff_count == 2 && from_index * to_index >= 0);
+
+    char desc[100] = {'\0'};
+    sprintf(desc, 
+            "(frog %s%d[%d] leaps to gap[%d])", 
+            g_array_entity_denote[prev_state->first[from_index]->first],
+            prev_state->first[from_index]->second,
+            from_index,
+            to_index);
+    out = desc;
 }
 
 // delete a subtree backtraced from current node which should be popped off
@@ -115,7 +149,7 @@ inline bool determine_destination(const State* s) {
         form += g_array_entity_denote[x->first];
     }
 
-    if (form == "WWWGwww") {
+    if (form == "RRRGLLL") {
         return true;
     }
     return false;
@@ -134,8 +168,8 @@ void attach_vertex(ssgVertex* parent, State* transit_stat) {
     ++parent->child_ref_number;
 }
 
-// 枚举所有可能的下一个状态
-void enumerate_next_states(State* cur_stat, std::list<State*>& next_stat_lst) {
+// list possible states that current state goes to
+void list_next_states(State* cur_stat, std::list<State*>& next_stat_lst) {
    int       gap_index       = -1;
    int       i               = 0;
    int       frog_index      = -1;
@@ -239,7 +273,7 @@ void frog_problem() {
         State* cur_stat = bfs_queue.front();
         bfs_queue.pop();
 
-        enumerate_next_states(cur_stat, next_stat_lst);
+        list_next_states(cur_stat, next_stat_lst);
 
         if (next_stat_lst.size() > 0) {
             for (auto x: next_stat_lst) {
@@ -257,7 +291,7 @@ void frog_problem() {
     }
 }
 
-int main() {
+int main(int argc, const char** argv) {
     frog_problem();
     return 0;
 }
