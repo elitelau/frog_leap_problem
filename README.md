@@ -5,3 +5,7 @@ Finally, the two sides frogs changes this position through the gap position. Fin
 
 frogs.cpp // c++ implementation that find the solution
 frogs.js  // javascript implementation that find the solution
+
+Environment:
+gcc 4.7.2
+node.js 4.1.2
