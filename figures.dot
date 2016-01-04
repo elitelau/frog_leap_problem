@@ -1,0 +1,168 @@
+digraph figures {
+
+    subgraph L1 {
+        node [style=filled];
+        l1 [label="赫特福德郡"];
+        l1_1 [label="朗伯恩"];
+        l1_3 [label="内瑟菲尔德"];
+        l1_2 [label="梅里顿"];
+        l1_1 -> l1;
+        l1_3 -> l1;
+        l1_2 -> l1;
+        
+        l0 [label="布莱顿"];
+        l1_2 -> l0[label="民兵团迁移"];
+    }
+
+    subgraph L2 {
+        node [style=filled];
+        l2 [label="德比郡"];
+        l2_1 [label="彭伯利"];
+        l2_2[label="兰顿"];
+        l2_1 -> l2;
+        l2_2 -> l2;
+
+        l2_people [label="安妮斯利太太",shape=box];
+        l2_2->l2_people[dir=none];
+    }
+
+    subgraph L3 {
+        node [style=filled];
+        l3 [label="肯特郡"];
+        l3_1 [label="罗辛斯"];
+        l3_1 -> l3;
+
+        {rank=same;l1;l2;l3}
+    }
+
+    subgraph G5 {
+       node[shape = box];
+        g5_1 [label="哈丽特"];
+        g5_2 [label="福斯特上校"];
+        g5_1 -> g5_2 [label="夫妇", dir=both];
+        g5_3 [label="卡特上尉"];
+        g5_4 [label="丹尼军官"];
+        {rank=same; g5_1; g5_2; g5_3; g5_4}
+        g5_6 [label="普拉特道军官"];
+        g5_5 [label="威克姆"];
+        g5_6 -> g5_5[style=invis];
+        g5_4->g5_5[label="朋友"];
+        {rank=same; g5_5; g5_6;}
+    }
+
+    subgraph G2_0 {
+       node[shape = box];
+       
+       parents_2_f [label="威廉爵士"];
+       parents_2_m [label="卢卡斯"];
+       child_2_1 [label="卢卡斯小姐\n玛丽亚"];
+       xialuote [label="夏洛特"];
+
+       parents_2_m -> parents_2_f[label="夫妇"];
+       parents_2_m -> child_2_1[label="二女儿"];
+       parents_2_m -> xialuote;
+
+       {rank = same; parents_2_f; parents_2_m;}
+       {rank = same; child_2_1; xialuote};
+
+       l1 -> parents_2_f[style=invis];
+       //{rank = same; parents_2_f; l1}
+
+       description [style="rounded", fontsize=10, label="rendered by Graphviz, \ncontact: eligere.lau@gmail.com\n方块表示人物,圆形表示地点,L:地点"];
+       parents_2_f ->description[style="invis"];
+       {rank=same; parents_2_f; description}
+    }
+
+    subgraph G0_0 {
+       node [shape = record]; 
+       parents_1_f [label = "贝内特\n(L:朗伯恩)"];
+       employee_0[label="希尔"];
+       child_1_1 [label = "简"];
+       child_1_3 [label = "玛丽"];
+       child_1_4 [label = "基蒂\n(凯瑟琳)"];
+       child_1_5 [label = "莉迪亚"];
+       child_1_2 [label = "伊丽莎白\n(莉齐)\n(伊莱扎)"];
+
+       parents_1_f -> employee_0[label="女管家"];
+       parents_1_f -> child_1_1 [label = "大女儿"];
+       parents_1_f -> child_1_3 [label = "三女儿"];
+       parents_1_f -> child_1_4 [label = "四女儿"];
+       parents_1_f -> child_1_5 [label = "五女儿"];
+       parents_1_f -> child_1_2 [label = "二女儿"];
+
+       lover_1 [label = "宾利\n(L:内瑟菲尔德)"];
+       darcy [label="达西\n(L:彭伯利)"];
+       child_1_1 -> lover_1 [label = "恋人", dir = both, color=red];
+       child_1_2 -> darcy [label="恋人", dir = both, color = red];
+
+    }
+
+    subgraph G0_1 {
+       rank = same;
+       node[shape = box, style = filled];
+
+       parents_1_m [label="贝内特夫人"];
+       brother_1 [label="爱德华\.加德纳\n(L:伦敦)"];
+       sister_1 [label="菲利普斯夫人\n(L:梅丽顿)"];
+       
+       parents_1_f -> parents_1_m;
+       parents_1_m ->brother_1 [label="兄妹"];
+       brother_1 ->sister_1 [label="兄妹"];
+
+    }
+
+    subgraph G0_2 {
+       rank = same;
+       node[shape = box];
+       cousin_1 [label="柯林斯\n(L:亨斯福德)"];
+       cousin_1->parents_1_f [label="表侄", dir=back];
+
+       xialuote [label="夏洛特"];
+       xialuote -> cousin_1 [label="夫妇", dir=both];
+
+       {rank = same; xialuote; cousin_1}
+    }
+    
+
+    subgraph G1_0 {
+       node [shape= box];
+       //brother1_1 [label="宾利"];
+       brother1_2 [label="宾利小姐\n(卡罗琳)"];
+       brother1_3 [label="赫斯特夫人\n(路易莎)"];
+       employee_1 [label="尼科利斯太太"];
+
+
+      {rank = same; lover_1; brother1_2; brother1_3;}
+      lover_1 -> brother1_2[label="兄妹"];
+      brother1_2 -> brother1_3[label="姐妹"];
+      lover_1 -> employee_1;
+    }
+
+    subgraph G3_0 {
+        node[shape = box];
+        
+        sister_3_1 [label = "安妮\.达西"];
+        debuer [label="凯瑟琳\.德布尔\n(L:罗辛斯)"];
+        husband [label="刘易斯\.德布尔"];
+        sister_3_1 -> debuer[label="姐妹", dir=both];
+        debuer->husband[label="夫妇", dir=both];
+        {rank = same; child_1_5; debuer; sister_3_1; husband};
+
+        daughter_3_2 [label="乔治亚娜"];
+        cousin_3_1 [label="菲茨威廉\.达西"];
+        employee_3_1 [label= "雷诺兹太太"];
+        sister_3_1 -> darcy[label="儿子"];
+        sister_3_1 -> daughter_3_2[label="小女"];
+        darcy -> cousin_3_1 [label="表哥"];
+        darcy -> employee_3_1[label="管家"];
+        {rank = same; darcy; daughter_3_2;}
+        
+        daughter_3_1 [label="德布尔小姐"];
+        employee_3_2 [label="詹金森太太"];
+        
+        debuer-> daughter_3_1[label="女儿"];
+        debuer-> employee_3_2[label="佣人"];
+        {rank = same; daughter_3_1; employee_3_2}
+    }
+
+}
