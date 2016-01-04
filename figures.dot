@@ -68,7 +68,7 @@ digraph figures {
        l1 -> parents_2_f[style=invis];
        //{rank = same; parents_2_f; l1}
 
-       description [style="rounded", fontsize=10, label="rendered by Graphviz, \ncontact: eligere.lau@gmail.com\n方块表示人物,圆形表示地点,L:地点"];
+       description [style="rounded, dashed", label="rendered by Graphviz, \ncontact: eligere.lau@gmail.com\n方块表示人物,圆形表示地点,L:地点"];
        parents_2_f ->description[style="invis"];
        {rank=same; parents_2_f; description}
     }
